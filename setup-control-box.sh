@@ -33,3 +33,21 @@ chgrp ops /etc/ansible/hosts
 chmod g+x /etc/ansible/hosts
 echo "Installing Git"
 apt-get install git
+echo "Mounting user metadata:"
+$user-metadata-dir="/mnt/user-metadata"
+if ! mountpoint -q $user-metadata-dir; then
+    mkdir -p $user-metadata-dir
+    mount /dev/xvdh1 $user-metadata-dir
+    echo "Mounted${user-metadata-dir}"
+else
+    echo "${user-metadata-dir} already maunted"
+
+if ! [-f "${user-metadata-dir}/meata.js"] then
+    echo "No meata.js file found in {$user-metadata-dir}"
+    exit (1)
+fi
+wget -q https://rawgit.com/hubward/ansible-setup/master/setup-ssh.py -O /root/setup-ssh.py
+chmod u+x setup-ssh.py
+/root/setup-ssh.py 
+
+
