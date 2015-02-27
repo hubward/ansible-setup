@@ -17,11 +17,6 @@ echo "Installing Python modules needed by ansible:"
 pip install paramiko PyYAML Jinja2 httplib2
 echo "Installing ansible:"
 pip install ansible
-echo "Configuring ansible to use SoftLayer inventory:"
-ansible_version=$(ansible --version | grep -o -P "[0-9].[0-9].[0-9]$" >&1)
-wget -O /etc/ansible/hosts https://rawgit.com/ansible/ansible/release${ansible_version}/plugins/inventory/softlayer.py
-chgrp ops /etc/ansible/hosts
-chmod g+x /etc/ansible/hosts
 echo "Installing Git"
 apt-get -y install git
 echo "Configuring ansible to use user metadata as facts:"
@@ -49,7 +44,8 @@ fi
 #Ansible treats all files in this directory as custom facts files
 ansible_local_facts_dir="/etc/ansible/facts.d"
 mkdir -p $ansible_local_facts_dir
-metadata_sym_link=$ansible_local_facts_dir/user_meta_data.js
+#extension needs be .facts to be treated as facts file by ansible
+metadata_sym_link=$ansible_local_facts_dir/user_provided_metadata.facts
 if [ -f $metadata_sym_link ]; then
     echo "Found user metadata facts file in ${ansible_local_facts_dir}. Will use it"
 else
@@ -58,3 +54,19 @@ else
 	exit 1
     fi
 fi
+
+ansible_setup_repo_dir=/root/ansible-setup
+if [ -d $ansible_setup_repo_dir ]; then
+    echo "Updating existing repo $ansible_setup_repo_dir"
+    cd $ansible_setup_repo_dir
+    git pull; 
+    cd ~
+else
+    echo "Clonning setup repository from github to $ansible_setup_repo_dir"
+    github clone https://github.com/hubward/ansible-setup.git $ansible_setup_repo_dir
+    cd ~
+fi
+
+setup_ssh_playbook=$ansible_setup_repo_dir/setup-ssh.yml
+echo "Invoking ansible playbook: $setup_ssh_playbook" 
+ansible-playbook -i "localhost" -c local $setup_ssh_playbook
