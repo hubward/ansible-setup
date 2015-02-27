@@ -9,16 +9,6 @@ exec 2>&1
 
 echo "Installing sudo:"
 apt-get install sudo
-echo "Creating operators group 'ops'"
-groupadd ops
-if grep -q "%ops" /etc/sudoers; then
-    echo "Group ops already found in /etc/sudoers. No changes will be applied to /etc/sudoers"
-else
-    echo "Allowed sudo for group ops members without password"
-    echo "Allow members of group ops to sudo all commands without password" >> /etc/sudoers
-    echo "%ops ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-fi
-
 echo "Installing Python 2.x:"
 apt-get install pip-python
 apt-get install python-dev
