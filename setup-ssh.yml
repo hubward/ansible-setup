@@ -3,17 +3,17 @@
   remote_user: root
   tasks:
     - name:  create ops group
-      group: name={{ ansible_local.ops_group_name | mandatory }} state=present
+      group: name={{ ansible_local.umd.ops_group_name | mandatory }} state=present
 
     - name: create users
-      user: name={{ item.username }} group={{ ansible_local.ops_group_name }}
+      user: name={{ item.username }} group={{ ansible_local.umd.ops_group_name }}
         groups=sudo state=present shell=/bin/bash
-      with_items: ansible_local.sshusers
+      with_items: ansible_local.umd.sshusers
 
     - name: allow sudo without password to all members of ops group
       lineinfile: "dest=/etc/sudoers state=present
-        regexp='%{{ ansible_local.ops_group_name }} ALL'
-        line='%{{ ansible_local.ops_group_name }} ALL=NOPASSWD: ALL'"
+        regexp='%{{ ansible_local.umd.ops_group_name }} ALL'
+        line='%{{ ansible_local.umd.ops_group_name }} ALL=NOPASSWD: ALL'"
 
     - name: create key directory
       file: path=/etc/ssh/authorized_keys state=directory
@@ -25,7 +25,7 @@
         line='{{ item.ssh_key }}'
         create=yes
         owner={{ item.username }} group=ops mode=640"
-      with_items: ansible_local.sshusers
+      with_items: ansible_local.umd.sshusers
 
 #    - name: download sshd_config template
 #      get_url:
