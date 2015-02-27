@@ -20,7 +20,7 @@
         owner=0 group={{ansible_local.umd.ops_group_name}} mode=0750
 
     - name: upload user keys
-      lineinfile: "dest=/etc/ssh/authorised_keys/{{ item.username }}
+      lineinfile: "dest=/etc/ssh/authorized_keys/{{ item.username }}
         state=present
         line='{{ item.ssh_key }}'
         create=yes
@@ -28,7 +28,7 @@
       with_items: ansible_local.umd.sshusers
 
     - name: sshd configuration file update
-      template: src=../../config/sshd_config.j2
+      template: src=sshd_config.j2
         dest=/etc/ssh/sshd_config
         backup=yes
         owner=0 group=0 mode=0644
