@@ -33,24 +33,37 @@ chgrp ops /etc/ansible/hosts
 chmod g+x /etc/ansible/hosts
 echo "Installing Git"
 apt-get install git
-echo "Mounting user metadata:"
+echo "Configuring ansible to use user metadata as facts:"
 user_metadata_dir="/mnt/user-metadata"
+#mount /dev/xvdh1. This special device is used by softlayer to bring
+#user provided metadata upon virtual service creation. Metadata is
+#written inside a file meta.js
 if ! mountpoint -q $user_metadata_dir; then
     mkdir -p $user_metadata_dir
     if mount /dev/xvdh1 $user_metadata_dir; then
-	echo "Mounted${user_metadata_dir}"
+	echo "Mounted ${user_metadata_dir}"
     else
-	exit 1;
+	echo "pass"
+#	exit 1;
     fi
 else
     echo "${user_metadata_dir} already maunted"
 fi
-
-if ! [[ -f "${user_metadata_dir}/meata.js" ]]; then
-    echo "No meata.js file found in {$user_metadata_dir}"
+user_metadata_file=$user_metadata_dir/meta.js
+if  [ ! -f $user_metdata_file ]; then
+    echo "$user_metadata_file not found." 
     exit 1;
 fi
-echo "test1"
-wget -q https://rawgit.com/hubward/ansible-setup/master/setup-ssh.py -O /root/setup-ssh.py
-chmod u+x /root/setup-ssh.py
-/root/setup-ssh.py
+#create a link inside the /etc/ansible/facts.do to the meta.js.
+#Ansible treats all files in this directory as custom facts files
+ansible_local_facts_dir="/etc/ansible/facts.d"
+mkdir -p $ansible_local_facts_dir
+metadata_sym_link=$ansible_local_facts_dir/user_meta_data.js
+if [ -f $metadata_sym_link ]; then
+    echo "Found user metadata facts file in ${ansible_local_facts_dir}. Will use it"
+else
+    if ! ln -s $user_metadata_file $metadata_sym_link; then
+	echo "unable to create sym link $metadata_sym_link to $user_metadata_file"
+	exit 1
+    fi
+fi
