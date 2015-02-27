@@ -8,10 +8,10 @@ exec > >(tee /root/ansible-setup.log)
 exec 2>&1
 
 echo "Installing sudo:"
-apt-get install sudo
+apt-get -y install sudo
 echo "Installing Python 2.x:"
-apt-get install pip-python
-apt-get install python-dev
+apt-get -y install pip-python
+apt-get -y install python-dev
 echo "Installing Python modules needed by ansible:"
 pip install paramiko PyYAML Jinja2 httplib2
 echo "Installing ansible:"
@@ -22,7 +22,7 @@ wget -O /etc/ansible/hosts https://rawgit.com/ansible/ansible/release${ansible_v
 chgrp ops /etc/ansible/hosts
 chmod g+x /etc/ansible/hosts
 echo "Installing Git"
-apt-get install git
+apt-get -y install git
 echo "Configuring ansible to use user metadata as facts:"
 user_metadata_dir="/mnt/user-metadata"
 #mount /dev/xvdh1. This special device is used by softlayer to bring
