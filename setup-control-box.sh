@@ -45,7 +45,7 @@ fi
 ansible_local_facts_dir="/etc/ansible/facts.d"
 mkdir -p $ansible_local_facts_dir
 #extension needs be .facts to be treated as facts file by ansible
-metadata_sym_link=$ansible_local_facts_dir/user_provided_metadata.facts
+metadata_sym_link=$ansible_local_facts_dir/umd.facts
 if [ -f $metadata_sym_link ]; then
     echo "Found user metadata facts file in ${ansible_local_facts_dir}. Will use it"
 else
