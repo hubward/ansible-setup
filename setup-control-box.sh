@@ -69,4 +69,4 @@ fi
 
 setup_ssh_playbook=$ansible_setup_repo_dir/setup-ssh.yml
 echo "Invoking ansible playbook: $setup_ssh_playbook" 
-ansible-playbook -i "localhost," -c local $setup_ssh_playbook
+ansible-playbook $setup_ssh_playbook -i "localhost," -c local
