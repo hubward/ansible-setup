@@ -10,8 +10,9 @@ exec 2>&1
 echo "Installing sudo:"
 apt-get -y install sudo
 echo "Installing Python 2.x:"
-apt-get -y install pip-python
+apt-get -y install python
 apt-get -y install python-dev
+apt-get -y install python-pip
 echo "Installing Python modules needed by ansible:"
 pip install paramiko PyYAML Jinja2 httplib2
 echo "Installing ansible:"
