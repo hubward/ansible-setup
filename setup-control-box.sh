@@ -35,7 +35,7 @@ if ! mountpoint -q $user_metadata_dir; then
 else
     echo "${user_metadata_dir} already maunted"
 fi
-user_metadata_file=$user_metadata_dir/openstack/latest/user_data.js
+user_metadata_file=$user_metadata_dir/openstack/latest/user_data
 if  [ ! -f $user_metdata_file ]; then
     echo "$user_metadata_file not found." 
     exit 1;
