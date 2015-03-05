@@ -48,8 +48,9 @@ ansible_local_facts_dir="/etc/ansible/facts.d"
 mkdir -p $ansible_local_facts_dir
 #extension needs be .fact to be treated as facts file by ansible
 local_metadata_file=$ansible_local_facts_dir/umd.fact
+
 cp $user_metadata_file $local_metadata_file
-chmod -x $local_metadata_file
+chmod -x $local_metadata_file=======
 
 ansible_setup_repo_dir=/root/ansible-setup
 if [ -d $ansible_setup_repo_dir ]; then
