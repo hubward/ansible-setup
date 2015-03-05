@@ -40,20 +40,16 @@ if  [ ! -f $user_metdata_file ]; then
     echo "$user_metadata_file not found." 
     exit 1;
 fi
-#create a link inside the /etc/ansible/facts.do to the meta.js.
-#Ansible treats all files in this directory as custom facts files
+#copy user metadata inside the /etc/ansible/facts.do to the meta.js.
+#Ansible treats all files in this directory as custom facts files. Symlink
+#doesn't work since the user metadata file has +x attribute and ansible
+#tries to execute it.
 ansible_local_facts_dir="/etc/ansible/facts.d"
 mkdir -p $ansible_local_facts_dir
-#extension needs be .facts to be treated as facts file by ansible
-metadata_sym_link=$ansible_local_facts_dir/umd.facts
-if [ -f $metadata_sym_link ]; then
-    echo "Found user metadata facts file in ${ansible_local_facts_dir}. Will use it"
-else
-    if ! ln -s $user_metadata_file $metadata_sym_link; then
-	echo "unable to create sym link $metadata_sym_link to $user_metadata_file"
-	exit 1
-    fi
-fi
+#extension needs be .fact to be treated as facts file by ansible
+local_metadata_file=$ansible_local_facts_dir/umd.fact
+cp $user_metadata_file $local_metadata_file
+chmod -x $local_metadata_file
 
 ansible_setup_repo_dir=/root/ansible-setup
 if [ -d $ansible_setup_repo_dir ]; then
