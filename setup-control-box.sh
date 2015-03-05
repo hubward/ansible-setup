@@ -63,7 +63,7 @@ if [ -d $ansible_setup_repo_dir ]; then
     cd ~
 else
     echo "Clonning setup repository from github to $ansible_setup_repo_dir"
-    github clone https://github.com/hubward/ansible-setup.git $ansible_setup_repo_dir
+    git clone https://github.com/hubward/ansible-setup.git $ansible_setup_repo_dir
     cd ~
 fi
 
