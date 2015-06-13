@@ -40,17 +40,6 @@ if  [ ! -f $user_metdata_file ]; then
     echo "$user_metadata_file not found." 
     exit 1;
 fi
-#copy user metadata inside the /etc/ansible/facts.do to the meta.js.
-#Ansible treats all files in this directory as custom facts files. Symlink
-#doesn't work since the user metadata file has +x attribute and ansible
-#tries to execute it.
-ansible_local_facts_dir="/etc/ansible/facts.d"
-mkdir -p $ansible_local_facts_dir
-#extension needs be .fact to be treated as facts file by ansible
-local_metadata_file=$ansible_local_facts_dir/umd.fact
-
-cp $user_metadata_file $local_metadata_file
-chmod -x $local_metadata_file
 
 ansible_setup_repo_dir=/root/ansible-setup
 if [ -d $ansible_setup_repo_dir ]; then
@@ -60,10 +49,10 @@ if [ -d $ansible_setup_repo_dir ]; then
     cd ~
 else
     echo "Clonning setup repository from github to $ansible_setup_repo_dir"
-    git clone https://github.com/hubward/ansible-setup.git $ansible_setup_repo_dir
+    git clone https://github.com/hubward/ansible-setup-playbooks.git $ansible_setup_repo_dir
     cd ~
 fi
 
-setup_ssh_playbook=$ansible_setup_repo_dir/setup-ssh.yml
+setup_ssh_playbook=$ansible_setup_repo_dir/setup-users.yml
 echo "Invoking ansible playbook: $setup_ssh_playbook" 
-ansible-playbook $setup_ssh_playbook -i "localhost," -c local
+ansible-playbook $setup_ssh_playbook -i "localhost," -c local -e "@$user_metadata_file"
