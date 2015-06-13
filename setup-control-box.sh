@@ -53,6 +53,6 @@ else
     cd ~
 fi
 
-setup_ssh_playbook=$ansible_setup_repo_dir/setup-users.yml
+setup_ssh_playbook=$ansible_setup_repo_dir/setup_users.yml
 echo "Invoking ansible playbook: $setup_ssh_playbook" 
 ansible-playbook $setup_ssh_playbook -i "localhost," -c local -e "@$user_metadata_file"
