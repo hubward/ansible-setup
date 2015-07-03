@@ -9,6 +9,10 @@ exec 2>&1
 
 echo "Installing sudo:"
 apt-get -y install sudo
+echo "Installing socat:"
+apt-get -y install socat
+echo "Installing curl: "
+apt-get -y install curl
 echo "Installing Python 2.x:"
 apt-get -y install python
 apt-get -y install python-dev
