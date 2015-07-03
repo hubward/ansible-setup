@@ -3,7 +3,7 @@
 #Bash script to install ansible control box on minimal debian
 
 # write std out to to log file 
-exec > >(tee /root/ansible-setup.log)
+exec > >(tee /home/$USER/vm-post-install-script.log)
 # write std err to the same log file
 exec 2>&1
 
@@ -41,18 +41,19 @@ if  [ ! -f $user_metdata_file ]; then
     exit 1;
 fi
 
-ansible_setup_repo_dir=/root/ansible-setup
-if [ -d $ansible_setup_repo_dir ]; then
-    echo "Updating existing repo $ansible_setup_repo_dir"
-    cd $ansible_setup_repo_dir
+ansible_user_management_repo_dir=/home/$USER/ansible-user-management
+if [ -d $ansible_user_management_repo_dir ]; then
+    echo "Updating existing repo $ansible_user_management_repo_dir"
+    cd $ansible_user_management_repo_dir
     git pull; 
     cd ~
 else
-    echo "Clonning setup repository from github to $ansible_setup_repo_dir"
-    git clone https://github.com/hubward/ansible-setup-playbooks.git $ansible_setup_repo_dir
+    echo "Clonning setup repository from github to $ansible_user_management_repo_dir"
+    git clone https://github.com/hubward/ansible-setup-playbooks.git $ansible_user_management_repo_dir
     cd ~
 fi
 
-setup_ssh_playbook=$ansible_setup_repo_dir/setup_users.yml
+setup_ssh_playbook=$ansible_user_management_repo_dir/setup_users.yml
 echo "Invoking ansible playbook: $setup_ssh_playbook" 
 ansible-playbook $setup_ssh_playbook -i "localhost," -c local -e "@$user_metadata_file"
+rm -r ansible_user_management_repo_dir
