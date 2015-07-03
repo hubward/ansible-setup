@@ -60,4 +60,4 @@ fi
 setup_ssh_playbook=$ansible_user_management_repo_dir/setup_users.yml
 echo "Invoking ansible playbook: $setup_ssh_playbook" 
 ansible-playbook $setup_ssh_playbook -i "localhost," -c local -e "@$user_metadata_file"
-rm -r ansible_user_management_repo_dir
+rm -r $ansible_user_management_repo_dir
